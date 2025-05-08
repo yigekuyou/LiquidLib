@@ -4,16 +4,27 @@ project("Liquidlib" C CXX)
 set(VERSION 1.1.4)
 set(SOV 1)
 include(CheckIncludeFileCXX)
-find_package(GSL REQUIRED)
-find_package(xdrfile REQUIRED xdrfile)
+find_package(GSL)
+find_package(Boost COMPONENTS math )
+find_package(xdrfile)
 include(GNUInstallDirs)
 include_directories(Trajectory/include/
 MeanSquaredDisplacement/include/
 ${xdrfile_INCLUDE_DIRS})
+
+if(xdrfile_FOUND)
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGROMACS" CACHE STRING "Set C++ Compiler Flags xdrfile " FORCE)
+endif()
+
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DOMP -fopenmp" CACHE STRING "Set C++ Compiler Flags openmp" FORCE)
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGROMACS" CACHE STRING "Set C++ Compiler Flags xdrfile " FORCE)
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGSL" CACHE STRING "Set C++ Compiler Flags GSL" FORCE)
-# set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBOOST" CACHE STRING "Set C++ Compiler Flags boost" FORCE)
+
+if(GSL_FOUND)
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DGSL" CACHE STRING "Set C++ Compiler Flags GSL" FORCE)
+endif()
+
+if(Boost_FOUND)
+	set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DBOOST" CACHE STRING "Set C++ Compiler Flags boost" FORCE)
+endif()
 add_subdirectory(BondOrderParameter)
 add_subdirectory(CoherentIntermediateScattering)
 add_subdirectory(CoherentVanHoveFunction)

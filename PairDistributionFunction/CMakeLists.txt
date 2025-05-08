@@ -1,17 +1,27 @@
 set(TARGET PairDistributionFunction) 
-add_library(${TARGET} SHARED src/${TARGET}.cpp include/${TARGET}.hpp)
-add_executable( comput${TARGET}  src/${TARGET}_main.cpp include/${TARGET}_main.hpp )
+add_library(${TARGET} SHARED src/${TARGET}.cpp )
+add_executable( comput${TARGET}  src/${TARGET}_main.cpp )
 set_target_properties(${TARGET}  PROPERTIES VERSION ${VERSION} SOVERSION ${SOV})
 set_target_properties(${TARGET} PROPERTIES PUBLIC_HEADER include/${TARGET}.hpp)
 include_directories(include)
 target_link_libraries(${TARGET}
-xdrfile
-GSL::gsl
-GSL::gslcblas
-MeanSquaredDisplacement
 Trajectory
+MeanSquaredDisplacement
 )
+if(xdrfile_FOUND)
+target_link_libraries(${TARGET}
+xdrfile)
+endif()
+
+if(Boost_FOUND)
+target_link_libraries(${TARGET}
+Boost::math)
+endif()
+if(GSL_FOUND)
+target_link_libraries(${TARGET}
+GSL::gsl
+GSL::gslcblas)
+endif()
 target_link_libraries(comput${TARGET} ${TARGET} )
 install(TARGETS ${TARGET})
 install(TARGETS comput${TARGET} )
-
